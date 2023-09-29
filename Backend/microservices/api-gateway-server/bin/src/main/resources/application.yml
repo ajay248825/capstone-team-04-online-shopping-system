@@ -1,0 +1,44 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: api-gateway-server
+
+
+  cloud:
+    gateway:
+      routes:
+      - id: cart-ms
+        uri:
+          lb://cart-ms  
+        predicates:
+        - Path=/api/cart/**
+        
+      - id: product-ms
+        uri:
+          lb://product-ms  
+        predicates:
+        #- Path=/api/product/**
+        - Path=/api/products/**
+      
+      - id: order-ms
+        uri:
+          lb://order-ms  
+        predicates:
+        - Path=/api/orders/**
+        
+      - id: auth-server
+        uri:
+          lb://auth-server
+        predicates:
+        - Path=/api/auth/**
+        
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+          cors-configurations: 
+            '[/**]':
+              allowed-origins: "*"
+              allowed-methods: "*"
+              allowed-headers: "*"
+    
